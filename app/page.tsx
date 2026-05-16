@@ -11,18 +11,22 @@ import { WithdrawModal } from "@/components/withdraw-modal"
 import { CurrenciesScreen } from "@/components/currencies-screen"
 import { TransactionsScreen } from "@/components/transactions-screen"
 import { HistoryScreen } from "@/components/history-screen"
+import { SettingsScreen } from "@/components/settings-screen"
+import { AdminPanel } from "@/components/admin-panel"
 
-function PlaceholderScreen({ title }: { title: string }) {
+function PlaceholderScreen({ title, isDarkMode }: { title: string; isDarkMode: boolean }) {
   return (
-    <div className="flex-1 flex items-center justify-center bg-gray-50">
+    <div className={`flex-1 flex items-center justify-center ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       <div className="text-center p-6">
-        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+          isDarkMode ? "bg-gray-800" : "bg-gray-200"
+        }`}>
+          <svg className={`w-8 h-8 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
         </div>
-        <p className="text-gray-500 text-sm font-medium">[Pantalla en desarrollo]</p>
-        <p className="text-gray-400 text-xs mt-1">{title}</p>
+        <p className={`text-sm font-medium ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>[Pantalla en desarrollo]</p>
+        <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>{title}</p>
       </div>
     </div>
   )
@@ -32,13 +36,14 @@ interface DashboardContentProps {
   onDeposit: () => void
   onSend: () => void
   onExchange: () => void
+  isDarkMode: boolean
 }
 
-function DashboardContent({ onDeposit, onSend, onExchange }: DashboardContentProps) {
+function DashboardContent({ onDeposit, onSend, onExchange, isDarkMode }: DashboardContentProps) {
   return (
-    <div className="flex-1 overflow-y-auto pb-20 bg-gray-50">
+    <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       {/* Header con saludo */}
-      <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 pt-2 pb-6">
+      <div className={`px-4 pt-2 pb-6 ${isDarkMode ? "bg-gradient-to-r from-emerald-800 to-emerald-700" : "bg-gradient-to-r from-emerald-600 to-emerald-500"}`}>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-emerald-100 text-xs">Bienvenido de vuelta</p>
@@ -53,18 +58,18 @@ function DashboardContent({ onDeposit, onSend, onExchange }: DashboardContentPro
       </div>
 
       {/* Curva decorativa */}
-      <div className="h-4 bg-gradient-to-r from-emerald-600 to-emerald-500 relative">
-        <div className="absolute inset-0 bg-gray-50 rounded-t-3xl" />
+      <div className={`h-4 ${isDarkMode ? "bg-gradient-to-r from-emerald-800 to-emerald-700" : "bg-gradient-to-r from-emerald-600 to-emerald-500"} relative`}>
+        <div className={`absolute inset-0 rounded-t-3xl ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`} />
       </div>
 
       {/* Carrusel de Billetera */}
-      <WalletCarousel />
+      <WalletCarousel isDarkMode={isDarkMode} />
 
-      {/* Botones de Acción Rápida */}
-      <QuickActions onDeposit={onDeposit} onSend={onSend} onExchange={onExchange} />
+      {/* Botones de Accion Rapida */}
+      <QuickActions onDeposit={onDeposit} onSend={onSend} onExchange={onExchange} isDarkMode={isDarkMode} />
 
-      {/* Gráfico del Mercado */}
-      <MarketChart />
+      {/* Grafico del Mercado */}
+      <MarketChart isDarkMode={isDarkMode} />
     </div>
   )
 }
@@ -73,6 +78,8 @@ export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState<TabType>("inicio")
   const [isDepositOpen, setIsDepositOpen] = useState(false)
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isAdminMode, setIsAdminMode] = useState(false)
 
   const handleDeposit = () => {
     setIsDepositOpen(true)
@@ -86,29 +93,55 @@ export default function Dashboard() {
     setCurrentTab("monedas")
   }
 
+  const handleToggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode)
+  }
+
+  const handleSwitchToAdmin = () => {
+    setIsAdminMode(true)
+  }
+
+  const handleExitAdmin = () => {
+    setIsAdminMode(false)
+    setCurrentTab("ajustes")
+  }
+
   const renderContent = () => {
+    // Si esta en modo admin, mostrar el panel administrativo
+    if (isAdminMode) {
+      return <AdminPanel isDarkMode={isDarkMode} onExitAdmin={handleExitAdmin} />
+    }
+
     switch (currentTab) {
       case "inicio":
-        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} />
+        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} isDarkMode={isDarkMode} />
       case "billetera":
-        return <PlaceholderScreen title="Gestiona tus billeteras y saldos" />
+        return <HistoryScreen isDarkMode={isDarkMode} />
       case "monedas":
-        return <CurrenciesScreen />
+        return <CurrenciesScreen isDarkMode={isDarkMode} />
       case "transacciones":
-        return <TransactionsScreen />
-      case "historial":
-        return <HistoryScreen />
+        return <TransactionsScreen isDarkMode={isDarkMode} />
+      case "ajustes":
+        return (
+          <SettingsScreen 
+            isDarkMode={isDarkMode} 
+            onToggleDarkMode={handleToggleDarkMode}
+            onSwitchToAdmin={handleSwitchToAdmin}
+          />
+        )
       default:
-        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} />
+        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} isDarkMode={isDarkMode} />
     }
   }
 
   return (
-    <MobileFrame>
+    <MobileFrame isDarkMode={isDarkMode}>
       {renderContent()}
-      <BottomNavigation currentTab={currentTab} onTabChange={setCurrentTab} />
-      <DepositModal isOpen={isDepositOpen} onClose={() => setIsDepositOpen(false)} />
-      <WithdrawModal isOpen={isWithdrawOpen} onClose={() => setIsWithdrawOpen(false)} />
+      {!isAdminMode && (
+        <BottomNavigation currentTab={currentTab} onTabChange={setCurrentTab} isDarkMode={isDarkMode} />
+      )}
+      <DepositModal isOpen={isDepositOpen} onClose={() => setIsDepositOpen(false)} isDarkMode={isDarkMode} />
+      <WithdrawModal isOpen={isWithdrawOpen} onClose={() => setIsWithdrawOpen(false)} isDarkMode={isDarkMode} />
     </MobileFrame>
   )
 }

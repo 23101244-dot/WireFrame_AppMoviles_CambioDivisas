@@ -18,7 +18,11 @@ const wallets: WalletCard[] = [
   { currency: "GBP", symbol: "£", balance: 185.20, flag: "🇬🇧", color: "from-indigo-500 to-indigo-600" },
 ]
 
-export function WalletCarousel() {
+interface WalletCarouselProps {
+  isDarkMode?: boolean
+}
+
+export function WalletCarousel({ isDarkMode = false }: WalletCarouselProps) {
   const [activeCard, setActiveCard] = useState(0)
 
   const goToPrevious = () => {
@@ -35,24 +39,32 @@ export function WalletCarousel() {
 
   return (
     <div className="px-4 py-3">
-      {/* Header con flechas de navegación */}
+      {/* Header con flechas de navegacion */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-gray-800">Mi Billetera</h2>
+          <h2 className={`text-sm font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>Mi Billetera</h2>
           <div className="flex items-center gap-1">
             <button
               onClick={goToPrevious}
-              className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors"
+              className={`w-6 h-6 flex items-center justify-center rounded-full transition-colors ${
+                isDarkMode 
+                  ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500" 
+                  : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300"
+              }`}
               aria-label="Tarjeta anterior"
             >
-              <ChevronLeft className="w-4 h-4 text-gray-600" />
+              <ChevronLeft className={`w-4 h-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`} />
             </button>
             <button
               onClick={goToNext}
-              className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 active:bg-gray-300 transition-colors"
+              className={`w-6 h-6 flex items-center justify-center rounded-full transition-colors ${
+                isDarkMode 
+                  ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500" 
+                  : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300"
+              }`}
               aria-label="Tarjeta siguiente"
             >
-              <ChevronRight className="w-4 h-4 text-gray-600" />
+              <ChevronRight className={`w-4 h-4 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`} />
             </button>
           </div>
         </div>
@@ -98,7 +110,7 @@ export function WalletCarousel() {
         </div>
       </div>
       
-      {/* Indicadores de página clickeables */}
+      {/* Indicadores de pagina clickeables */}
       <div className="flex justify-center gap-2 mt-3">
         {wallets.map((wallet, index) => (
           <button
@@ -107,7 +119,7 @@ export function WalletCarousel() {
             className={`w-2 h-2 rounded-full transition-all duration-300 ${
               index === activeCard 
                 ? "bg-emerald-600 w-4" 
-                : "bg-gray-300 hover:bg-gray-400"
+                : isDarkMode ? "bg-gray-600 hover:bg-gray-500" : "bg-gray-300 hover:bg-gray-400"
             }`}
             aria-label={`Ir a tarjeta ${wallet.currency}`}
           />

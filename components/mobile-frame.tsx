@@ -4,18 +4,27 @@ import type { ReactNode } from "react"
 
 interface MobileFrameProps {
   children: ReactNode
+  isDarkMode?: boolean
 }
 
-export function MobileFrame({ children }: MobileFrameProps) {
+export function MobileFrame({ children, isDarkMode = false }: MobileFrameProps) {
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      {/* Marco físico del celular */}
-      <div className="relative max-w-[400px] w-full h-[844px] bg-white rounded-[40px] shadow-2xl border border-gray-200 overflow-hidden">
+    <div className={`min-h-screen flex items-center justify-center p-4 ${isDarkMode ? "bg-gray-950" : "bg-slate-100"}`}>
+      {/* Marco fisico del celular */}
+      <div className={`relative max-w-[400px] w-full h-[844px] rounded-[40px] shadow-2xl border overflow-hidden ${
+        isDarkMode 
+          ? "bg-gray-900 border-gray-700" 
+          : "bg-white border-gray-200"
+      }`}>
         {/* Notch del iPhone */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[30px] bg-black rounded-b-2xl z-50" />
         
         {/* Barra de estado */}
-        <div className="h-[44px] bg-gradient-to-r from-emerald-600 to-emerald-500 flex items-center justify-between px-6 pt-2">
+        <div className={`h-[44px] flex items-center justify-between px-6 pt-2 ${
+          isDarkMode 
+            ? "bg-gradient-to-r from-emerald-800 to-emerald-700" 
+            : "bg-gradient-to-r from-emerald-600 to-emerald-500"
+        }`}>
           <span className="text-white text-xs font-medium">9:41</span>
           <div className="flex items-center gap-1">
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">

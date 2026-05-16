@@ -243,7 +243,11 @@ function OrderBook({ pair, onBack }: OrderBookProps) {
   )
 }
 
-export function CurrenciesScreen() {
+interface CurrenciesScreenProps {
+  isDarkMode?: boolean
+}
+
+export function CurrenciesScreen({ isDarkMode = false }: CurrenciesScreenProps) {
   const [selectedPair, setSelectedPair] = useState<typeof currencyPairs[0] | null>(null)
   const [collapsed, setCollapsed] = useState(false)
 

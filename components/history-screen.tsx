@@ -69,7 +69,11 @@ const tabs: { key: HistoryType; label: string; shortLabel: string; color: string
   { key: "sellImmediate", label: "Venta Inmediata", shortLabel: "V. Inmed.", color: "orange" },
 ]
 
-export function HistoryScreen() {
+interface HistoryScreenProps {
+  isDarkMode?: boolean
+}
+
+export function HistoryScreen({ isDarkMode = false }: HistoryScreenProps) {
   const [activeTab, setActiveTab] = useState<HistoryType>("buy")
   const [currentPage, setCurrentPage] = useState(1)
 

@@ -103,7 +103,11 @@ function TransactionCard({ transaction, onCancel }: TransactionCardProps) {
   )
 }
 
-export function TransactionsScreen() {
+interface TransactionsScreenProps {
+  isDarkMode?: boolean
+}
+
+export function TransactionsScreen({ isDarkMode = false }: TransactionsScreenProps) {
   const [buyOrders, setBuyOrders] = useState(initialBuyOrders)
   const [sellOrders, setSellOrders] = useState(initialSellOrders)
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy")

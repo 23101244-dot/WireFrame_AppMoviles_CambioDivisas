@@ -5,7 +5,7 @@ import { TrendingUp } from "lucide-react"
 
 const timeFilters = ["1D", "1W", "1M", "1Y"]
 
-// Paths SVG para diferentes temporalidades - líneas suaves que suben y bajan
+// Paths SVG para diferentes temporalidades
 const svgPaths: Record<string, { buy: string; sell: string; price: number }> = {
   "1D": {
     buy: "M 0 80 Q 50 70, 80 85 T 160 75 T 240 80 T 320 65 T 400 70",
@@ -29,33 +29,47 @@ const svgPaths: Record<string, { buy: string; sell: string; price: number }> = {
   }
 }
 
-export function MarketChart() {
+interface MarketChartProps {
+  isDarkMode?: boolean
+}
+
+export function MarketChart({ isDarkMode = false }: MarketChartProps) {
   const [activeFilter, setActiveFilter] = useState("1D")
   
   const currentPaths = svgPaths[activeFilter]
 
   return (
     <div className="px-4 py-3 flex-1">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 h-full flex flex-col">
-        {/* Header del gráfico */}
+      <div className={`rounded-2xl border shadow-sm p-4 h-full flex flex-col ${
+        isDarkMode 
+          ? "bg-gray-800 border-gray-700" 
+          : "bg-white border-gray-100"
+      }`}>
+        {/* Header del grafico */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              isDarkMode ? "bg-emerald-900/50" : "bg-emerald-100"
+            }`}>
+              <TrendingUp className={`w-4 h-4 ${isDarkMode ? "text-emerald-400" : "text-emerald-600"}`} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-gray-800">USD/PEN</span>
-                <span className="text-[10px] px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-medium">
+                <span className={`text-sm font-semibold ${isDarkMode ? "text-white" : "text-gray-800"}`}>USD/PEN</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+                  isDarkMode ? "bg-emerald-900/50 text-emerald-400" : "bg-emerald-100 text-emerald-700"
+                }`}>
                   +0.12%
                 </span>
               </div>
-              <p className="text-lg font-bold text-gray-900">S/. {currentPaths.price.toFixed(4)}</p>
+              <p className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+                S/. {currentPaths.price.toFixed(4)}
+              </p>
             </div>
           </div>
           
           {/* Selectores de tiempo */}
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+          <div className={`flex gap-1 rounded-lg p-0.5 ${isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}>
             {timeFilters.map((filter) => (
               <button
                 key={filter}
@@ -63,7 +77,9 @@ export function MarketChart() {
                 className={`px-2 py-1 text-[10px] font-medium rounded-md transition-all duration-200 ${
                   activeFilter === filter
                     ? "bg-emerald-500 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-200"
+                    : isDarkMode 
+                      ? "text-gray-400 hover:text-gray-200 hover:bg-gray-600"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-200"
                 }`}
               >
                 {filter}
@@ -76,45 +92,42 @@ export function MarketChart() {
         <div className="flex gap-4 mb-2">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-blue-500" />
-            <span className="text-[10px] text-gray-600">Compra</span>
+            <span className={`text-[10px] ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Compra</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-[10px] text-gray-600">Venta</span>
+            <span className={`text-[10px] ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>Venta</span>
           </div>
         </div>
 
-        {/* Gráfico SVG Nativo */}
-        <div className="flex-1 min-h-[140px] bg-gradient-to-b from-gray-50 to-white rounded-xl p-2 relative overflow-hidden">
+        {/* Grafico SVG Nativo */}
+        <div className={`flex-1 min-h-[140px] rounded-xl p-2 relative overflow-hidden ${
+          isDarkMode 
+            ? "bg-gradient-to-b from-gray-700 to-gray-800" 
+            : "bg-gradient-to-b from-gray-50 to-white"
+        }`}>
           {/* Grid de fondo */}
           <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
             <defs>
               <pattern id="grid" width="50" height="25" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 25" fill="none" stroke="#e5e7eb" strokeWidth="0.5" />
+                <path 
+                  d="M 50 0 L 0 0 0 25" 
+                  fill="none" 
+                  stroke={isDarkMode ? "#374151" : "#e5e7eb"} 
+                  strokeWidth="0.5" 
+                />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
           </svg>
           
-          {/* Líneas del gráfico */}
+          {/* Lineas del grafico */}
           <svg 
             viewBox="0 0 400 150" 
             className="w-full h-32 relative z-10"
             preserveAspectRatio="none"
           >
-            {/* Área de relleno azul (Compra) */}
-            <defs>
-              <linearGradient id="buyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
-              </linearGradient>
-              <linearGradient id="sellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#10B981" stopOpacity="0.05" />
-              </linearGradient>
-            </defs>
-            
-            {/* Línea azul (Compra) */}
+            {/* Linea azul (Compra) */}
             <path
               d={currentPaths.buy}
               fill="none"
@@ -125,7 +138,7 @@ export function MarketChart() {
               className="transition-all duration-500 ease-in-out"
             />
             
-            {/* Línea verde (Venta) */}
+            {/* Linea verde (Venta) */}
             <path
               d={currentPaths.sell}
               fill="none"
@@ -143,14 +156,14 @@ export function MarketChart() {
         </div>
 
         {/* Precios actuales */}
-        <div className="flex justify-between mt-3 pt-3 border-t border-gray-100">
+        <div className={`flex justify-between mt-3 pt-3 border-t ${isDarkMode ? "border-gray-700" : "border-gray-100"}`}>
           <div className="text-center flex-1">
-            <p className="text-[10px] text-gray-500 mb-0.5">Precio Compra</p>
+            <p className={`text-[10px] mb-0.5 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Precio Compra</p>
             <p className="text-sm font-bold text-blue-600">S/. {(currentPaths.price - 0.02).toFixed(4)}</p>
           </div>
-          <div className="w-px bg-gray-200" />
+          <div className={`w-px ${isDarkMode ? "bg-gray-700" : "bg-gray-200"}`} />
           <div className="text-center flex-1">
-            <p className="text-[10px] text-gray-500 mb-0.5">Precio Venta</p>
+            <p className={`text-[10px] mb-0.5 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Precio Venta</p>
             <p className="text-sm font-bold text-emerald-600">S/. {currentPaths.price.toFixed(4)}</p>
           </div>
         </div>
