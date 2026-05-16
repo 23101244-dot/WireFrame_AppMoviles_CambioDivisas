@@ -30,7 +30,7 @@ export function WalletCarousel() {
       {/* Carrusel horizontal con snap */}
       <div
         ref={scrollRef}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2"
+        className="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-none pb-2"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {wallets.map((wallet) => (
