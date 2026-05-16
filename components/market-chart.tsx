@@ -1,53 +1,38 @@
 "use client"
 
 import { useState } from "react"
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
 import { TrendingUp } from "lucide-react"
 
 const timeFilters = ["1D", "1W", "1M", "1Y"]
 
-// Datos simulados del mercado USD/PEN por temporalidad
-const marketDataByTime: Record<string, { time: string; buy: number; sell: number }[]> = {
-  "1D": [
-    { time: "09:00", buy: 3.72, sell: 3.74 },
-    { time: "10:00", buy: 3.73, sell: 3.75 },
-    { time: "11:00", buy: 3.71, sell: 3.73 },
-    { time: "12:00", buy: 3.74, sell: 3.76 },
-    { time: "13:00", buy: 3.73, sell: 3.75 },
-    { time: "14:00", buy: 3.72, sell: 3.74 },
-    { time: "15:00", buy: 3.75, sell: 3.77 },
-    { time: "16:00", buy: 3.73, sell: 3.75 },
-  ],
-  "1W": [
-    { time: "Lun", buy: 3.70, sell: 3.72 },
-    { time: "Mar", buy: 3.72, sell: 3.74 },
-    { time: "Mié", buy: 3.68, sell: 3.70 },
-    { time: "Jue", buy: 3.71, sell: 3.73 },
-    { time: "Vie", buy: 3.74, sell: 3.76 },
-    { time: "Sáb", buy: 3.73, sell: 3.75 },
-    { time: "Dom", buy: 3.73, sell: 3.75 },
-  ],
-  "1M": [
-    { time: "Sem1", buy: 3.65, sell: 3.67 },
-    { time: "Sem2", buy: 3.70, sell: 3.72 },
-    { time: "Sem3", buy: 3.68, sell: 3.70 },
-    { time: "Sem4", buy: 3.73, sell: 3.75 },
-  ],
-  "1Y": [
-    { time: "Ene", buy: 3.80, sell: 3.82 },
-    { time: "Mar", buy: 3.75, sell: 3.77 },
-    { time: "May", buy: 3.65, sell: 3.67 },
-    { time: "Jul", buy: 3.60, sell: 3.62 },
-    { time: "Sep", buy: 3.68, sell: 3.70 },
-    { time: "Nov", buy: 3.73, sell: 3.75 },
-  ],
+// Paths SVG para diferentes temporalidades - líneas suaves que suben y bajan
+const svgPaths: Record<string, { buy: string; sell: string; price: number }> = {
+  "1D": {
+    buy: "M 0 80 Q 50 70, 80 85 T 160 75 T 240 80 T 320 65 T 400 70",
+    sell: "M 0 60 Q 50 50, 80 65 T 160 55 T 240 60 T 320 45 T 400 50",
+    price: 3.7540
+  },
+  "1W": {
+    buy: "M 0 90 Q 60 60, 100 75 T 200 50 T 300 70 T 400 55",
+    sell: "M 0 70 Q 60 40, 100 55 T 200 30 T 300 50 T 400 35",
+    price: 3.7320
+  },
+  "1M": {
+    buy: "M 0 100 Q 80 85, 140 60 T 260 80 T 340 50 T 400 65",
+    sell: "M 0 80 Q 80 65, 140 40 T 260 60 T 340 30 T 400 45",
+    price: 3.7180
+  },
+  "1Y": {
+    buy: "M 0 40 Q 70 90, 120 70 T 220 100 T 300 60 T 400 75",
+    sell: "M 0 20 Q 70 70, 120 50 T 220 80 T 300 40 T 400 55",
+    price: 3.6950
+  }
 }
 
 export function MarketChart() {
   const [activeFilter, setActiveFilter] = useState("1D")
   
-  const marketData = marketDataByTime[activeFilter]
-  const latestData = marketData[marketData.length - 1]
+  const currentPaths = svgPaths[activeFilter]
 
   return (
     <div className="px-4 py-3 flex-1">
@@ -65,7 +50,7 @@ export function MarketChart() {
                   +0.12%
                 </span>
               </div>
-              <p className="text-lg font-bold text-gray-900">S/. {latestData.sell.toFixed(4)}</p>
+              <p className="text-lg font-bold text-gray-900">S/. {currentPaths.price.toFixed(4)}</p>
             </div>
           </div>
           
@@ -99,66 +84,74 @@ export function MarketChart() {
           </div>
         </div>
 
-        {/* Gráfico */}
-        <div className="flex-1 min-h-[140px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={marketData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-              <XAxis 
-                dataKey="time" 
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 9, fill: '#9CA3AF' }}
-                interval="preserveStartEnd"
-              />
-              <YAxis 
-                domain={['dataMin - 0.02', 'dataMax + 0.02']}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 9, fill: '#9CA3AF' }}
-                tickFormatter={(value) => value.toFixed(2)}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                  fontSize: '11px',
-                  padding: '8px',
-                }}
-                formatter={(value: number) => [`S/. ${value.toFixed(4)}`, '']}
-              />
-              <Line
-                type="monotone"
-                dataKey="buy"
-                stroke="#3B82F6"
-                strokeWidth={2}
-                dot={false}
-                name="Compra"
-                animationDuration={500}
-              />
-              <Line
-                type="monotone"
-                dataKey="sell"
-                stroke="#10B981"
-                strokeWidth={2}
-                dot={false}
-                name="Venta"
-                animationDuration={500}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        {/* Gráfico SVG Nativo */}
+        <div className="flex-1 min-h-[140px] bg-gradient-to-b from-gray-50 to-white rounded-xl p-2 relative overflow-hidden">
+          {/* Grid de fondo */}
+          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <pattern id="grid" width="50" height="25" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 25" fill="none" stroke="#e5e7eb" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
+          
+          {/* Líneas del gráfico */}
+          <svg 
+            viewBox="0 0 400 150" 
+            className="w-full h-32 relative z-10"
+            preserveAspectRatio="none"
+          >
+            {/* Área de relleno azul (Compra) */}
+            <defs>
+              <linearGradient id="buyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.05" />
+              </linearGradient>
+              <linearGradient id="sellGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#10B981" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#10B981" stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
+            
+            {/* Línea azul (Compra) */}
+            <path
+              d={currentPaths.buy}
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="transition-all duration-500 ease-in-out"
+            />
+            
+            {/* Línea verde (Venta) */}
+            <path
+              d={currentPaths.sell}
+              fill="none"
+              stroke="#10b981"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="transition-all duration-500 ease-in-out"
+            />
+            
+            {/* Puntos finales */}
+            <circle cx="400" cy="70" r="4" fill="#2563eb" className="animate-pulse" />
+            <circle cx="400" cy="50" r="4" fill="#10b981" className="animate-pulse" />
+          </svg>
         </div>
 
         {/* Precios actuales */}
         <div className="flex justify-between mt-3 pt-3 border-t border-gray-100">
           <div className="text-center flex-1">
             <p className="text-[10px] text-gray-500 mb-0.5">Precio Compra</p>
-            <p className="text-sm font-bold text-blue-600">S/. {latestData.buy.toFixed(4)}</p>
+            <p className="text-sm font-bold text-blue-600">S/. {(currentPaths.price - 0.02).toFixed(4)}</p>
           </div>
           <div className="w-px bg-gray-200" />
           <div className="text-center flex-1">
             <p className="text-[10px] text-gray-500 mb-0.5">Precio Venta</p>
-            <p className="text-sm font-bold text-emerald-600">S/. {latestData.sell.toFixed(4)}</p>
+            <p className="text-sm font-bold text-emerald-600">S/. {currentPaths.price.toFixed(4)}</p>
           </div>
         </div>
       </div>

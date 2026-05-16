@@ -7,6 +7,7 @@ import { WalletCarousel } from "@/components/wallet-carousel"
 import { QuickActions } from "@/components/quick-actions"
 import { MarketChart } from "@/components/market-chart"
 import { DepositModal } from "@/components/deposit-modal"
+import { WithdrawModal } from "@/components/withdraw-modal"
 
 function PlaceholderScreen({ title }: { title: string }) {
   return (
@@ -26,10 +27,11 @@ function PlaceholderScreen({ title }: { title: string }) {
 
 interface DashboardContentProps {
   onDeposit: () => void
+  onSend: () => void
   onExchange: () => void
 }
 
-function DashboardContent({ onDeposit, onExchange }: DashboardContentProps) {
+function DashboardContent({ onDeposit, onSend, onExchange }: DashboardContentProps) {
   return (
     <div className="flex-1 overflow-y-auto pb-20 bg-gray-50">
       {/* Header con saludo */}
@@ -56,7 +58,7 @@ function DashboardContent({ onDeposit, onExchange }: DashboardContentProps) {
       <WalletCarousel />
 
       {/* Botones de Acción Rápida */}
-      <QuickActions onDeposit={onDeposit} onExchange={onExchange} />
+      <QuickActions onDeposit={onDeposit} onSend={onSend} onExchange={onExchange} />
 
       {/* Gráfico del Mercado */}
       <MarketChart />
@@ -67,9 +69,14 @@ function DashboardContent({ onDeposit, onExchange }: DashboardContentProps) {
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState<TabType>("inicio")
   const [isDepositOpen, setIsDepositOpen] = useState(false)
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)
 
   const handleDeposit = () => {
     setIsDepositOpen(true)
+  }
+
+  const handleSend = () => {
+    setIsWithdrawOpen(true)
   }
 
   const handleExchange = () => {
@@ -79,7 +86,7 @@ export default function Dashboard() {
   const renderContent = () => {
     switch (currentTab) {
       case "inicio":
-        return <DashboardContent onDeposit={handleDeposit} onExchange={handleExchange} />
+        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} />
       case "billetera":
         return <PlaceholderScreen title="Gestiona tus billeteras y saldos" />
       case "monedas":
@@ -89,7 +96,7 @@ export default function Dashboard() {
       case "historial":
         return <PlaceholderScreen title="Historial de operaciones" />
       default:
-        return <DashboardContent onDeposit={handleDeposit} onExchange={handleExchange} />
+        return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} />
     }
   }
 
@@ -98,6 +105,7 @@ export default function Dashboard() {
       {renderContent()}
       <BottomNavigation currentTab={currentTab} onTabChange={setCurrentTab} />
       <DepositModal isOpen={isDepositOpen} onClose={() => setIsDepositOpen(false)} />
+      <WithdrawModal isOpen={isWithdrawOpen} onClose={() => setIsWithdrawOpen(false)} />
     </MobileFrame>
   )
 }

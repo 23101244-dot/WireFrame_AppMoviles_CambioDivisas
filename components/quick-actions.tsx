@@ -4,6 +4,7 @@ import { ArrowDownToLine, Send, RefreshCw, QrCode } from "lucide-react"
 
 interface QuickActionsProps {
   onDeposit: () => void
+  onSend: () => void
   onExchange: () => void
 }
 
@@ -22,17 +23,17 @@ const actions: QuickAction[] = [
   { icon: QrCode, label: "QR", color: "text-purple-600", bgColor: "bg-purple-50", action: "qr" },
 ]
 
-export function QuickActions({ onDeposit, onExchange }: QuickActionsProps) {
+export function QuickActions({ onDeposit, onSend, onExchange }: QuickActionsProps) {
   const handleClick = (actionType: QuickAction["action"]) => {
     switch (actionType) {
       case "deposit":
         onDeposit()
         break
+      case "send":
+        onSend()
+        break
       case "exchange":
         onExchange()
-        break
-      case "send":
-        // TODO: Implementar envío
         break
       case "qr":
         // TODO: Implementar QR
