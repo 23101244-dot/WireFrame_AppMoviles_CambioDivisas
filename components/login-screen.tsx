@@ -47,72 +47,72 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
       <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-400 rounded-full -mr-20 -mt-20 opacity-20" />
       <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-300 rounded-full -ml-16 -mb-16 opacity-20" />
 
-      {/* Contenido */}
-      <div className="flex-1 flex flex-col justify-between relative z-10 p-6">
+      {/* Contenido con scroll */}
+      <div className="flex-1 flex flex-col relative z-10 p-4 overflow-y-auto">
         {/* Header */}
-        <div>
-          <div className="flex items-center justify-center mb-8 mt-12">
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="mb-6 mt-4">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
-          <h1 className="text-white text-3xl font-bold text-center mb-2">CambioPeP</h1>
-          <p className="text-emerald-50 text-center text-sm">Tu plataforma P2P de confianza</p>
+          <h1 className="text-white text-2xl font-bold text-center mb-1">CambioPeP</h1>
+          <p className="text-emerald-50 text-center text-xs">Tu plataforma P2P de confianza</p>
         </div>
 
         {/* Formulario */}
-        <div className="bg-white rounded-3xl p-6 shadow-2xl w-full max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Iniciar Sesión</h2>
+        <div className="bg-white rounded-3xl p-5 shadow-2xl w-full max-w-md mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">Iniciar Sesión</h2>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-              <p className="text-red-600 text-sm">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-2 mb-3">
+              <p className="text-red-600 text-xs">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
                 Correo o Usuario
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ejemplo@email.com"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm"
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-gray-700 mb-1.5">
                 Contraseña
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-9 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4" />
                   )}
                 </button>
               </div>
@@ -121,15 +121,15 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg hover:shadow-xl mt-6"
+              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold py-2.5 px-4 rounded-lg transition-all shadow-lg hover:shadow-xl mt-4"
             >
               Iniciar Sesión
             </button>
           </form>
 
           {/* Register Link */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
+          <div className="mt-4 text-center">
+            <p className="text-gray-600 text-xs">
               ¿No tienes cuenta?{" "}
               <button
                 onClick={onSwitchToRegister}
@@ -141,15 +141,15 @@ export function LoginScreen({ onLoginSuccess, onSwitchToRegister }: LoginScreenP
           </div>
 
           {/* Demo Info */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center mb-2 font-semibold">Datos de prueba:</p>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500 text-center mb-1.5 font-semibold">Datos de prueba:</p>
             <p className="text-xs text-gray-500 text-center">Email: cualquiera@email.com</p>
             <p className="text-xs text-gray-500 text-center">Contraseña: 123456</p>
           </div>
         </div>
 
-        {/* Footer */}
-        <div />
+        {/* Espaciador para scroll */}
+        <div className="mb-8" />
       </div>
     </div>
   )
