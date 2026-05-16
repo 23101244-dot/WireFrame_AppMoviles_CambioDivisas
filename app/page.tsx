@@ -8,6 +8,9 @@ import { QuickActions } from "@/components/quick-actions"
 import { MarketChart } from "@/components/market-chart"
 import { DepositModal } from "@/components/deposit-modal"
 import { WithdrawModal } from "@/components/withdraw-modal"
+import { CurrenciesScreen } from "@/components/currencies-screen"
+import { TransactionsScreen } from "@/components/transactions-screen"
+import { HistoryScreen } from "@/components/history-screen"
 
 function PlaceholderScreen({ title }: { title: string }) {
   return (
@@ -90,11 +93,11 @@ export default function Dashboard() {
       case "billetera":
         return <PlaceholderScreen title="Gestiona tus billeteras y saldos" />
       case "monedas":
-        return <PlaceholderScreen title="Lista de criptomonedas y divisas" />
+        return <CurrenciesScreen />
       case "transacciones":
-        return <PlaceholderScreen title="Realiza cambios y transferencias" />
+        return <TransactionsScreen />
       case "historial":
-        return <PlaceholderScreen title="Historial de operaciones" />
+        return <HistoryScreen />
       default:
         return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} />
     }
