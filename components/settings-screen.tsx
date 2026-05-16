@@ -1,6 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { Moon, Sun, Shield, User, Bell, Lock, HelpCircle, LogOut } from "lucide-react"
+import { AdminValidationModal } from "./admin-validation-modal"
 
 interface SettingsScreenProps {
   isDarkMode: boolean
@@ -9,15 +11,26 @@ interface SettingsScreenProps {
 }
 
 export function SettingsScreen({ isDarkMode, onToggleDarkMode, onSwitchToAdmin }: SettingsScreenProps) {
-  return (
-    <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      {/* Header */}
-      <div className={`px-4 py-6 ${isDarkMode ? "bg-gray-800" : "bg-white"} border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
-        <h1 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>Ajustes</h1>
-        <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Personaliza tu experiencia</p>
-      </div>
+  const [showAdminValidation, setShowAdminValidation] = useState(false)
 
-      <div className="p-4 space-y-4">
+  const handleSwitchToAdmin = () => {
+    setShowAdminValidation(true)
+  }
+
+  const handleAdminConfirm = () => {
+    onSwitchToAdmin()
+  }
+
+  return (
+    <>
+      <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
+        {/* Header */}
+        <div className={`px-4 py-6 ${isDarkMode ? "bg-gray-800" : "bg-white"} border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"}`}>
+          <h1 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>Ajustes</h1>
+          <p className={`text-sm ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Personaliza tu experiencia</p>
+        </div>
+
+        <div className="p-4 space-y-4">
         {/* Apartado Visual - US-003 */}
         <div className={`rounded-xl p-4 ${isDarkMode ? "bg-gray-800" : "bg-white"} shadow-sm`}>
           <h2 className={`text-sm font-semibold mb-4 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
@@ -108,7 +121,7 @@ export function SettingsScreen({ isDarkMode, onToggleDarkMode, onSwitchToAdmin }
           </h2>
           
           <button
-            onClick={onSwitchToAdmin}
+            onClick={handleSwitchToAdmin}
             className="w-full flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg"
           >
             <Shield className="w-6 h-6" />
@@ -156,7 +169,16 @@ export function SettingsScreen({ isDarkMode, onToggleDarkMode, onSwitchToAdmin }
             ExchangeApp v1.0.0
           </p>
         </div>
+        </div>
       </div>
-    </div>
+
+      {/* Admin Validation Modal */}
+      <AdminValidationModal
+        isOpen={showAdminValidation}
+        onClose={() => setShowAdminValidation(false)}
+        onConfirm={handleAdminConfirm}
+        isDarkMode={isDarkMode}
+      />
+    </>
   )
 }

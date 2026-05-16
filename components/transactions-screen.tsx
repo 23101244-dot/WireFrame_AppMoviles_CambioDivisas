@@ -32,11 +32,11 @@ interface TransactionCardProps {
   onCancel: (id: number) => void
 }
 
-function TransactionCard({ transaction, onCancel }: TransactionCardProps) {
+function TransactionCard({ transaction, onCancel, isDarkMode = false }: TransactionCardProps & { isDarkMode?: boolean }) {
   const isBuy = transaction.type === "buy"
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+    <div className={`rounded-xl p-4 shadow-sm border ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -49,41 +49,41 @@ function TransactionCard({ transaction, onCancel }: TransactionCardProps) {
             )}
           </div>
           <div>
-            <p className="font-bold text-gray-900 text-sm">{transaction.pair}</p>
-            <p className="text-xs text-gray-500">{transaction.createdAt}</p>
+            <p className={`font-bold text-sm ${isDarkMode ? "text-white" : "text-gray-900"}`}>{transaction.pair}</p>
+            <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>{transaction.createdAt}</p>
           </div>
         </div>
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
           transaction.status === "partial" 
             ? "bg-amber-100 text-amber-700" 
-            : "bg-gray-100 text-gray-600"
+            : isDarkMode ? "bg-gray-700 text-gray-300" : "bg-gray-100 text-gray-600"
         }`}>
           {transaction.status === "partial" ? `${transaction.filled}% Parcial` : "Pendiente"}
         </span>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-3">
-        <div className="bg-gray-50 rounded-lg p-2">
-          <p className="text-xs text-gray-500">Cantidad</p>
-          <p className="font-bold text-gray-900 text-sm">{transaction.amount.toFixed(2)}</p>
+        <div className={`rounded-lg p-2 ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
+          <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Cantidad</p>
+          <p className={`font-bold text-sm ${isDarkMode ? "text-white" : "text-gray-900"}`}>{transaction.amount.toFixed(2)}</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-2">
-          <p className="text-xs text-gray-500">Precio</p>
-          <p className="font-bold text-gray-900 text-sm">{transaction.price.toFixed(2)}</p>
+        <div className={`rounded-lg p-2 ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
+          <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Precio</p>
+          <p className={`font-bold text-sm ${isDarkMode ? "text-white" : "text-gray-900"}`}>{transaction.price.toFixed(2)}</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-2">
-          <p className="text-xs text-gray-500">Total</p>
-          <p className="font-bold text-gray-900 text-sm">{transaction.total.toFixed(2)}</p>
+        <div className={`rounded-lg p-2 ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
+          <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Total</p>
+          <p className={`font-bold text-sm ${isDarkMode ? "text-white" : "text-gray-900"}`}>{transaction.total.toFixed(2)}</p>
         </div>
       </div>
 
       {transaction.status === "partial" && (
         <div className="mb-3">
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-500">Progreso</span>
-            <span className="font-medium text-gray-700">{transaction.filled}%</span>
+            <span className={isDarkMode ? "text-gray-400" : "text-gray-500"}>Progreso</span>
+            <span className={`font-medium ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>{transaction.filled}%</span>
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className={`h-2 rounded-full overflow-hidden ${isDarkMode ? "bg-gray-700" : "bg-gray-100"}`}>
             <div 
               className={`h-full rounded-full ${isBuy ? "bg-emerald-500" : "bg-red-500"}`}
               style={{ width: `${transaction.filled}%` }}
@@ -94,7 +94,11 @@ function TransactionCard({ transaction, onCancel }: TransactionCardProps) {
 
       <button
         onClick={() => onCancel(transaction.id)}
-        className="w-full py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+        className={`w-full py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+          isDarkMode
+            ? "bg-red-900/30 text-red-400 hover:bg-red-900/50"
+            : "bg-red-50 text-red-600 hover:bg-red-100"
+        }`}
       >
         <X className="w-4 h-4" />
         Cancelar Orden
@@ -121,22 +125,22 @@ export function TransactionsScreen({ isDarkMode = false }: TransactionsScreenPro
   }
 
   return (
-    <div className="flex-1 overflow-y-auto pb-20 bg-gray-50">
+    <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       {/* Header */}
-      <div className="bg-white px-4 py-4 border-b border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900">Operaciones Activas</h2>
-        <p className="text-xs text-gray-500 mt-1">Gestiona tus ordenes pendientes</p>
+      <div className={`px-4 py-4 border-b ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"}`}>
+        <h2 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>Operaciones Activas</h2>
+        <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Gestiona tus ordenes pendientes</p>
       </div>
 
       {/* Tabs */}
       <div className="px-4 pt-4">
-        <div className="bg-white rounded-xl p-1 flex shadow-sm">
+        <div className={`rounded-xl p-1 flex shadow-sm ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
           <button
             onClick={() => setActiveTab("buy")}
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
               activeTab === "buy"
                 ? "bg-emerald-500 text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                : isDarkMode ? "text-gray-400 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             <ArrowDownLeft className="w-4 h-4" />
@@ -147,7 +151,7 @@ export function TransactionsScreen({ isDarkMode = false }: TransactionsScreenPro
             className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
               activeTab === "sell"
                 ? "bg-red-500 text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                : isDarkMode ? "text-gray-400 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             <ArrowUpRight className="w-4 h-4" />
@@ -165,15 +169,18 @@ export function TransactionsScreen({ isDarkMode = false }: TransactionsScreenPro
                 key={order.id}
                 transaction={order}
                 onCancel={handleCancelBuy}
+                isDarkMode={isDarkMode}
               />
             ))
           ) : (
-            <div className="bg-white rounded-xl p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-gray-400" />
+            <div className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-100"
+              }`}>
+                <Clock className={`w-8 h-8 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`} />
               </div>
-              <p className="text-gray-500 font-medium">No tienes ordenes de compra activas</p>
-              <p className="text-gray-400 text-sm mt-1">Ve a Monedas para crear una orden</p>
+              <p className={`font-medium ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>No tienes ordenes de compra activas</p>
+              <p className={`text-sm mt-1 ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>Ve a Monedas para crear una orden</p>
             </div>
           )
         ) : (
@@ -183,15 +190,18 @@ export function TransactionsScreen({ isDarkMode = false }: TransactionsScreenPro
                 key={order.id}
                 transaction={order}
                 onCancel={handleCancelSell}
+                isDarkMode={isDarkMode}
               />
             ))
           ) : (
-            <div className="bg-white rounded-xl p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-gray-400" />
+            <div className={`rounded-xl p-8 text-center ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                isDarkMode ? "bg-gray-700" : "bg-gray-100"
+              }`}>
+                <Clock className={`w-8 h-8 ${isDarkMode ? "text-gray-600" : "text-gray-400"}`} />
               </div>
-              <p className="text-gray-500 font-medium">No tienes ordenes de venta activas</p>
-              <p className="text-gray-400 text-sm mt-1">Ve a Monedas para crear una orden</p>
+              <p className={`font-medium ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>No tienes ordenes de venta activas</p>
+              <p className={`text-sm mt-1 ${isDarkMode ? "text-gray-500" : "text-gray-400"}`}>Ve a Monedas para crear una orden</p>
             </div>
           )
         )}

@@ -34,9 +34,10 @@ interface OrderFormProps {
   pair: { base: string; quote: string }
   onClose: () => void
   onConfirm: () => void
+  isDarkMode?: boolean
 }
 
-function OrderForm({ type, pair, onClose, onConfirm }: OrderFormProps) {
+function OrderForm({ type, pair, onClose, onConfirm, isDarkMode = false }: OrderFormProps) {
   const [amount, setAmount] = useState("")
   const [price, setPrice] = useState("")
 
@@ -51,23 +52,25 @@ function OrderForm({ type, pair, onClose, onConfirm }: OrderFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-      <div className="bg-white w-full max-w-[400px] rounded-t-3xl p-5 animate-in slide-in-from-bottom duration-300">
+      <div className={`w-full max-w-[400px] rounded-t-3xl p-5 animate-in slide-in-from-bottom duration-300 ${
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      }`}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-900">{titles[type]}</h3>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
-            <X className="w-5 h-5 text-gray-500" />
+          <h3 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>{titles[type]}</h3>
+          <button onClick={onClose} className={`p-2 rounded-full ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
+            <X className={`w-5 h-5 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`} />
           </button>
         </div>
 
-        <div className="bg-emerald-50 rounded-xl p-3 mb-4">
-          <p className="text-sm text-emerald-700 font-medium">
+        <div className={`rounded-xl p-3 mb-4 ${isDarkMode ? "bg-emerald-900/30" : "bg-emerald-50"}`}>
+          <p className={`text-sm font-medium ${isDarkMode ? "text-emerald-400" : "text-emerald-700"}`}>
             Par: {pair.base}/{pair.quote}
           </p>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
               Cantidad ({pair.base})
             </label>
             <input
@@ -75,13 +78,17 @@ function OrderForm({ type, pair, onClose, onConfirm }: OrderFormProps) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-lg"
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-lg ${
+                isDarkMode 
+                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" 
+                  : "bg-white border-gray-200 text-gray-900"
+              }`}
             />
           </div>
 
           {!isImmediate && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>
                 Precio por unidad ({pair.quote})
               </label>
               <input
@@ -89,23 +96,27 @@ function OrderForm({ type, pair, onClose, onConfirm }: OrderFormProps) {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-lg"
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-lg ${
+                  isDarkMode 
+                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" 
+                    : "bg-white border-gray-200 text-gray-900"
+                }`}
               />
             </div>
           )}
 
           {isImmediate && (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
-              <p className="text-sm text-amber-700">
+            <div className={`border rounded-xl p-3 ${isDarkMode ? "bg-amber-900/30 border-amber-700" : "bg-amber-50 border-amber-200"}`}>
+              <p className={`text-sm ${isDarkMode ? "text-amber-400" : "text-amber-700"}`}>
                 Se ejecutara al mejor precio disponible en el mercado.
               </p>
             </div>
           )}
 
-          <div className="bg-gray-50 rounded-xl p-3">
+          <div className={`rounded-xl p-3 ${isDarkMode ? "bg-gray-700" : "bg-gray-50"}`}>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Total estimado:</span>
-              <span className="font-bold text-gray-900">
+              <span className={isDarkMode ? "text-gray-400" : "text-gray-500"}>Total estimado:</span>
+              <span className={`font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 {amount && price ? (parseFloat(amount) * parseFloat(price)).toFixed(2) : "0.00"} {pair.quote}
               </span>
             </div>
@@ -133,26 +144,27 @@ function OrderForm({ type, pair, onClose, onConfirm }: OrderFormProps) {
 interface OrderBookProps {
   pair: typeof currencyPairs[0]
   onBack: () => void
+  isDarkMode?: boolean
 }
 
-function OrderBook({ pair, onBack }: OrderBookProps) {
+function OrderBook({ pair, onBack, isDarkMode = false }: OrderBookProps) {
   const [orderForm, setOrderForm] = useState<{
     type: "buy" | "sell" | "buyImmediate" | "sellImmediate"
   } | null>(null)
   const orderBook = generateOrderBook()
 
   return (
-    <div className="flex-1 overflow-y-auto pb-20 bg-gray-50">
+    <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-3 border-b border-gray-100">
-        <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full">
-          <ChevronLeft className="w-5 h-5 text-gray-600" />
+      <div className={`px-4 py-3 flex items-center gap-3 border-b ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"}`}>
+        <button onClick={onBack} className={`p-2 rounded-full ${isDarkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"}`}>
+          <ChevronLeft className={`w-5 h-5 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`} />
         </button>
         <div>
-          <h2 className="text-lg font-bold text-gray-900">
+          <h2 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             {pair.base}/{pair.quote}
           </h2>
-          <p className="text-xs text-gray-500">Libro de Ordenes</p>
+          <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Libro de Ordenes</p>
         </div>
         <div className="ml-auto text-right">
           <p className="text-lg font-bold text-emerald-600">{pair.buyPrice.toFixed(2)}</p>
@@ -164,19 +176,19 @@ function OrderBook({ pair, onBack }: OrderBookProps) {
 
       {/* Order Book */}
       <div className="p-4">
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="grid grid-cols-2 divide-x divide-gray-100">
+        <div className={`rounded-2xl shadow-sm overflow-hidden ${isDarkMode ? "bg-gray-800" : "bg-white"}`}>
+          <div className={`grid grid-cols-2 divide-x ${isDarkMode ? "divide-gray-700" : "divide-gray-100"}`}>
             {/* Bids (Compra) */}
             <div>
-              <div className="bg-emerald-50 px-3 py-2">
-                <p className="text-xs font-bold text-emerald-700 text-center">COMPRA (Bids)</p>
+              <div className={`px-3 py-2 ${isDarkMode ? "bg-emerald-900/30" : "bg-emerald-50"}`}>
+                <p className={`text-xs font-bold text-center ${isDarkMode ? "text-emerald-400" : "text-emerald-700"}`}>COMPRA (Bids)</p>
               </div>
-              <div className="divide-y divide-gray-50">
+              <div className={`divide-y ${isDarkMode ? "divide-gray-700" : "divide-gray-50"}`}>
                 {orderBook.bids.map((bid, index) => (
-                  <div key={index} className="px-3 py-2 text-xs">
+                  <div key={index} className={`px-3 py-2 text-xs ${isDarkMode ? "bg-gray-800" : ""}`}>
                     <div className="flex justify-between">
                       <span className="text-emerald-600 font-medium">{bid.price.toFixed(2)}</span>
-                      <span className="text-gray-600">{bid.amount.toFixed(2)}</span>
+                      <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>{bid.amount.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}
@@ -185,15 +197,15 @@ function OrderBook({ pair, onBack }: OrderBookProps) {
 
             {/* Asks (Venta) */}
             <div>
-              <div className="bg-red-50 px-3 py-2">
-                <p className="text-xs font-bold text-red-700 text-center">VENTA (Asks)</p>
+              <div className={`px-3 py-2 ${isDarkMode ? "bg-red-900/30" : "bg-red-50"}`}>
+                <p className={`text-xs font-bold text-center ${isDarkMode ? "text-red-400" : "text-red-700"}`}>VENTA (Asks)</p>
               </div>
-              <div className="divide-y divide-gray-50">
+              <div className={`divide-y ${isDarkMode ? "divide-gray-700" : "divide-gray-50"}`}>
                 {orderBook.asks.map((ask, index) => (
-                  <div key={index} className="px-3 py-2 text-xs">
+                  <div key={index} className={`px-3 py-2 text-xs ${isDarkMode ? "bg-gray-800" : ""}`}>
                     <div className="flex justify-between">
                       <span className="text-red-500 font-medium">{ask.price.toFixed(2)}</span>
-                      <span className="text-gray-600">{ask.amount.toFixed(2)}</span>
+                      <span className={isDarkMode ? "text-gray-400" : "text-gray-600"}>{ask.amount.toFixed(2)}</span>
                     </div>
                   </div>
                 ))}
@@ -237,6 +249,7 @@ function OrderBook({ pair, onBack }: OrderBookProps) {
           pair={{ base: pair.base, quote: pair.quote }}
           onClose={() => setOrderForm(null)}
           onConfirm={() => {}}
+          isDarkMode={isDarkMode}
         />
       )}
     </div>
@@ -256,22 +269,26 @@ export function CurrenciesScreen({ isDarkMode = false }: CurrenciesScreenProps) 
     : currencyPairs
 
   if (selectedPair) {
-    return <OrderBook pair={selectedPair} onBack={() => setSelectedPair(null)} />
+    return <OrderBook pair={selectedPair} onBack={() => setSelectedPair(null)} isDarkMode={isDarkMode} />
   }
 
   return (
-    <div className="flex-1 overflow-y-auto pb-20 bg-gray-50">
+    <div className={`flex-1 overflow-y-auto pb-20 ${isDarkMode ? "bg-gray-900" : "bg-gray-50"}`}>
       {/* Header */}
-      <div className="bg-white px-4 py-4 border-b border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900">Pares de Monedas</h2>
-        <p className="text-xs text-gray-500 mt-1">Selecciona un par para operar</p>
+      <div className={`px-4 py-4 border-b ${isDarkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-100"}`}>
+        <h2 className={`text-lg font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>Pares de Monedas</h2>
+        <p className={`text-xs mt-1 ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Selecciona un par para operar</p>
       </div>
 
       {/* Collapse Button */}
       <div className="px-4 pt-4">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-sm border text-sm font-medium transition-colors ${
+            isDarkMode 
+              ? "bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700" 
+              : "bg-white border-gray-100 text-gray-700 hover:bg-gray-50"
+          }`}
         >
           {collapsed ? (
             <>
@@ -293,7 +310,11 @@ export function CurrenciesScreen({ isDarkMode = false }: CurrenciesScreenProps) 
           <button
             key={pair.id}
             onClick={() => setSelectedPair(pair)}
-            className="w-full bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-emerald-200 hover:shadow-md transition-all text-left"
+            className={`w-full rounded-2xl p-4 shadow-sm border text-left transition-all ${
+              isDarkMode 
+                ? "bg-gray-800 border-gray-700 hover:border-emerald-500/50" 
+                : "bg-white border-gray-100 hover:border-emerald-200 hover:shadow-md"
+            }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -301,14 +322,14 @@ export function CurrenciesScreen({ isDarkMode = false }: CurrenciesScreenProps) 
                   <span className="text-white font-bold text-sm">{pair.base}</span>
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">
+                  <p className={`font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                     {pair.base}/{pair.quote}
                   </p>
-                  <p className="text-xs text-gray-500">Par de divisas</p>
+                  <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-500"}`}>Par de divisas</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="font-bold text-gray-900">{pair.buyPrice.toFixed(2)}</p>
+                <p className={`font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>{pair.buyPrice.toFixed(2)}</p>
                 <p className={`text-xs font-medium ${pair.change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                   {pair.change >= 0 ? "+" : ""}{pair.change.toFixed(2)}%
                 </p>
