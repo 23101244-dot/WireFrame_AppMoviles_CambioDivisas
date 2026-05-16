@@ -13,6 +13,8 @@ import { TransactionsScreen } from "@/components/transactions-screen"
 import { HistoryScreen } from "@/components/history-screen"
 import { SettingsScreen } from "@/components/settings-screen"
 import { AdminPanel } from "@/components/admin-panel"
+import { LoginScreen } from "@/components/login-screen"
+import { RegisterScreen } from "@/components/register-screen"
 
 function PlaceholderScreen({ title, isDarkMode }: { title: string; isDarkMode: boolean }) {
   return (
@@ -75,6 +77,8 @@ function DashboardContent({ onDeposit, onSend, onExchange, isDarkMode }: Dashboa
 }
 
 export default function Dashboard() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [authScreen, setAuthScreen] = useState<"login" | "register">("login")
   const [currentTab, setCurrentTab] = useState<TabType>("inicio")
   const [isDepositOpen, setIsDepositOpen] = useState(false)
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)
@@ -106,6 +110,13 @@ export default function Dashboard() {
     setCurrentTab("ajustes")
   }
 
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    setAuthScreen("login")
+    setCurrentTab("inicio")
+    setIsAdminMode(false)
+  }
+
   const renderContent = () => {
     // Si esta en modo admin, mostrar el panel administrativo
     if (isAdminMode) {
@@ -127,10 +138,30 @@ export default function Dashboard() {
             isDarkMode={isDarkMode} 
             onToggleDarkMode={handleToggleDarkMode}
             onSwitchToAdmin={handleSwitchToAdmin}
+            onLogout={handleLogout}
           />
         )
       default:
         return <DashboardContent onDeposit={handleDeposit} onSend={handleSend} onExchange={handleExchange} isDarkMode={isDarkMode} />
+    }
+  }
+
+  // Si no está logueado, mostrar pantalla de autenticación
+  if (!isLoggedIn) {
+    if (authScreen === "login") {
+      return (
+        <LoginScreen
+          onLoginSuccess={() => setIsLoggedIn(true)}
+          onSwitchToRegister={() => setAuthScreen("register")}
+        />
+      )
+    } else {
+      return (
+        <RegisterScreen
+          onRegisterSuccess={() => setIsLoggedIn(true)}
+          onSwitchToLogin={() => setAuthScreen("login")}
+        />
+      )
     }
   }
 
